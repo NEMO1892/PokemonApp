@@ -6,8 +6,7 @@ import javax.inject.Inject
 
 class ListPokemonsViewModelProvider @Inject constructor(
     private val networkRepository: NetworkRepository
-) :
-    BaseViewModelFactory<ListPokemonsViewModel>(ListPokemonsViewModel::class.java) {
+) : BaseViewModelFactory<ListPokemonsViewModel>(ListPokemonsViewModel::class.java) {
 
     override fun createViewModel(): ListPokemonsViewModel =
         ListPokemonsViewModel(networkRepository)
