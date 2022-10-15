@@ -7,8 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pokemonapp.databinding.FragmentListPokemonsBinding
 import com.example.pokemonapp.di.MyApplication
+import com.example.pokemonapp.model.Result
+import com.example.pokemonapp.ui.list.adapter.ListPokemonsAdapter
 import javax.inject.Inject
 
 class ListPokemonsFragment : Fragment() {
@@ -38,6 +41,23 @@ class ListPokemonsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding?.run {
+            viewModel.run {
+                listPokemons.observe(viewLifecycleOwner) {
+                    initAdapter(it)
+                }
+                getListPokemons()
+            }
+        }
+    }
 
+    private fun initAdapter(list: ArrayList<Result>) {
+        binding?.run {
+            if (recyclerView.adapter == null) {
+                recyclerView.adapter = ListPokemonsAdapter()
+                recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            }
+            (recyclerView.adapter as? ListPokemonsAdapter)?.setList(list)
+        }
     }
 }
