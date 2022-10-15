@@ -7,11 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pokemonapp.databinding.FragmentListPokemonsBinding
 import com.example.pokemonapp.di.MyApplication
 import com.example.pokemonapp.model.Result
-import com.example.pokemonapp.ui.list.adapter.ListPokemonsAdapter
+import com.example.pokemonapp.ui.list.adapter.ListPokemonsPagingAdapter
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ListPokemonsFragment : Fragment() {
@@ -42,22 +46,21 @@ class ListPokemonsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.run {
-            viewModel.run {
-                listPokemons.observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                viewModel.flow.collectLatest {
                     initAdapter(it)
                 }
-                getListPokemons()
             }
         }
     }
 
-    private fun initAdapter(list: ArrayList<Result>) {
+    private suspend fun initAdapter(list: PagingData<Result>) {
         binding?.run {
             if (recyclerView.adapter == null) {
-                recyclerView.adapter = ListPokemonsAdapter()
+                recyclerView.adapter = ListPokemonsPagingAdapter()
                 recyclerView.layoutManager = LinearLayoutManager(requireContext())
             }
-            (recyclerView.adapter as? ListPokemonsAdapter)?.setList(list)
+            (recyclerView.adapter as? ListPokemonsPagingAdapter)?.submitData(list)
         }
     }
 }

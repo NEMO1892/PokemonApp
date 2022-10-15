@@ -7,6 +7,6 @@ class NetworkRepository @Inject constructor(
     private val api: PokemonApi
 ) {
 
-    suspend fun getListPokemons(offset: Int? = null, limit: Int? = null) =
+    suspend fun getListPokemons(offset: Int? = 0, limit: Int? = 20) =
         api.getPokemons(offset = offset, limit = limit)
 }
