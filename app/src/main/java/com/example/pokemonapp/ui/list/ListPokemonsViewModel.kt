@@ -13,7 +13,7 @@ class ListPokemonsViewModel(
     private val dataSource: PokemonDataSource
 ) : ViewModel() {
 
-    val flow = Pager(PagingConfig(pageSize = COUNT_ITEM)) {
+    val flow = Pager(PagingConfig(pageSize = COUNT_ITEM, initialLoadSize = COUNT_ITEM)) {
         dataSource
     }.flow.cachedIn(viewModelScope)
 }

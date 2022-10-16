@@ -6,12 +6,17 @@ import androidx.paging.PagingDataAdapter
 import com.example.pokemonapp.databinding.ItemPokemonBinding
 import com.example.pokemonapp.model.Result
 
-class ListPokemonsPagingAdapter :
+class ListPokemonsPagingAdapter(
+    private val onClick: (id: Int) -> Unit
+) :
     PagingDataAdapter<Result, ListPokemonsViewHolder>(ListPokemonsDiffUtil()) {
 
     override fun onBindViewHolder(holder: ListPokemonsViewHolder, position: Int) {
         getItem(position)?.let { pokemon ->
             holder.bind(pokemon)
+            holder.itemView.setOnClickListener {
+                onClick(position + 1)
+            }
         }
     }
 

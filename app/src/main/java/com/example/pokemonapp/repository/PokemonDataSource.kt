@@ -19,11 +19,12 @@ class PokemonDataSource @Inject constructor(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Result> {
         return try {
             val key = params.key ?: 0
+            val nextKey = key + 20
             val response = networkRepository.getListPokemons(offset = key)
             LoadResult.Page(
                 data = response.body()?.results as ArrayList<Result>,
                 prevKey = null,
-                nextKey = key + 20
+                nextKey = nextKey
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
