@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/tema1/AndroidStudioProjects/PokemonApp/app/src/main/res/drawable/bg_rounded.xml" value="0.1405" />
+        <entry key="..\:/Users/tema1/AndroidStudioProjects/PokemonApp/app/src/main/res/drawable/ic_back_button.xml" value="0.1405" />
+        <entry key="..\:/Users/tema1/AndroidStudioProjects/PokemonApp/app/src/main/res/drawable/style_cardview.xml" value="0.1405" />
         <entry key="..\:/Users/tema1/AndroidStudioProjects/PokemonApp/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/tema1/AndroidStudioProjects/PokemonApp/app/src/main/res/layout/fragment_list_pokemons.xml" value="0.1721311475409836" />
         <entry key="..\:/Users/tema1/AndroidStudioProjects/PokemonApp/app/src/main/res/layout/fragment_pokemon.xml" value="0.22826086956521738" />

@@ -15,4 +15,8 @@
     <color name="platinum">#607D8B</color>
     <color name="orange">#B7EF4C41</color>
     <color name="yellow">#FFEB3B</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="transparent_blue">#4D00BCD4</color>
+    <color name="transparent_green">#6609FF00</color>
+
 </resources>

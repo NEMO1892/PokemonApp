@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.pokemonapp.R
 import com.example.pokemonapp.databinding.FragmentPokemonBinding
 import com.example.pokemonapp.di.MyApplication
 import com.example.pokemonapp.util.loadImage
@@ -41,15 +42,24 @@ class PokemonFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.actionBar?.setDisplayHomeAsUpEnabled(true)
         binding?.run {
             viewModel.run {
                 onePokemon.observe(viewLifecycleOwner) { pokemon ->
                     imagePokemonImageView.loadImage(pokemon.sprites.front_default)
-                    nameTextView.text = pokemon.types[0].type.name
+                    nameTextView.text = pokemon.name
+                    pokemon.types.forEach {
+                        typeTextView.append("${it.type.name} \n")
+                    }
+                    weightTextView.text = "${(pokemon.weight / 10)} ${getString(R.string.kg)}"
+                    heightTextView.text = "${(pokemon.height * 10)} ${getString(R.string.cm)}"
                 }
             }
             arguments?.getInt(ID_POKEMON)?.let { id ->
                 viewModel.getOnePokemon(id)
+            }
+            floatingBackButton.setOnClickListener {
+                requireActivity().onBackPressed()
             }
         }
     }
