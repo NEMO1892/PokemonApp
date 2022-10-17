@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -47,9 +49,18 @@ class ListPokemonsFragment : Fragment() {
             ViewModelProvider(this, viewModelProvider)[ListPokemonsViewModel::class.java]
     }
 
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        return if (enter) {
+            AnimationUtils.loadAnimation(context, R.anim.from_top)
+        } else {
+            AnimationUtils.loadAnimation(context, R.anim.to_bottom)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.run {
+            shimmerFrameLayout.startShimmerAnimation()
             lifecycleScope.launch {
                 viewModel.flow.collectLatest {
                     initAdapter(it)
@@ -73,6 +84,9 @@ class ListPokemonsFragment : Fragment() {
                 }
                 recyclerView.layoutManager = LinearLayoutManager(requireContext())
             }
+            shimmerFrameLayout.visibility = View.GONE
+            shimmerFrameLayout.stopShimmerAnimation()
+            recyclerView.visibility = View.VISIBLE
             (recyclerView.adapter as? ListPokemonsPagingAdapter)?.submitData(list)
         }
     }

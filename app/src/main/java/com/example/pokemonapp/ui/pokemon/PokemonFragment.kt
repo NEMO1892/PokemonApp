@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.pokemonapp.R
@@ -40,10 +42,18 @@ class PokemonFragment : Fragment() {
             ViewModelProvider(this, viewModelProvider)[PokemonViewModel::class.java]
     }
 
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        return if (enter) {
+            AnimationUtils.loadAnimation(context, R.anim.from_top)
+        } else {
+            AnimationUtils.loadAnimation(context, R.anim.to_bottom)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.actionBar?.setDisplayHomeAsUpEnabled(true)
         binding?.run {
+            startShimmerAnimation()
             viewModel.run {
                 onePokemon.observe(viewLifecycleOwner) { pokemon ->
                     imagePokemonImageView.loadImage(pokemon.sprites.front_default)
@@ -53,6 +63,7 @@ class PokemonFragment : Fragment() {
                     }
                     weightTextView.text = "${(pokemon.weight / 10)} ${getString(R.string.kg)}"
                     heightTextView.text = "${(pokemon.height * 10)} ${getString(R.string.cm)}"
+                    stopShimmerAnimation()
                 }
             }
             arguments?.getInt(ID_POKEMON)?.let { id ->
@@ -63,4 +74,30 @@ class PokemonFragment : Fragment() {
             }
         }
     }
+
+    private fun startShimmerAnimation() {
+        binding?.run {
+            shimmerImage.startShimmerAnimation()
+            shimmerName.startShimmerAnimation()
+            shimmerHeight.startShimmerAnimation()
+            shimmerTypes.startShimmerAnimation()
+            shimmerWeight.startShimmerAnimation()
+        }
+    }
+
+    private fun stopShimmerAnimation() {
+        binding?.run {
+            shimmerImage.stopShimmerAnimation()
+            shimmerName.stopShimmerAnimation()
+            shimmerHeight.stopShimmerAnimation()
+            shimmerTypes.stopShimmerAnimation()
+            shimmerWeight.stopShimmerAnimation()
+            imagePokemonImageView.background = null
+            nameTextView.background = null
+            heightTextView.background = null
+            typeTextView.background = null
+            weightTextView.background = null
+        }
+    }
+
 }
