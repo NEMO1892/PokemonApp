@@ -5,13 +5,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.pokemonapp.R
 import com.example.pokemonapp.databinding.FragmentListPokemonsBinding
 import com.example.pokemonapp.di.MyApplication
 import com.example.pokemonapp.model.Result
-import com.example.pokemonapp.ui.list.adapter.ListPokemonsAdapter
+import com.example.pokemonapp.ui.list.adapter.ListPokemonsPagingAdapter
+import com.example.pokemonapp.ui.pokemon.ID_POKEMON
+import com.example.pokemonapp.ui.pokemon.PokemonFragment
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ListPokemonsFragment : Fragment() {
@@ -39,25 +49,45 @@ class ListPokemonsFragment : Fragment() {
             ViewModelProvider(this, viewModelProvider)[ListPokemonsViewModel::class.java]
     }
 
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        return if (enter) {
+            AnimationUtils.loadAnimation(context, R.anim.from_top)
+        } else {
+            AnimationUtils.loadAnimation(context, R.anim.to_bottom)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.run {
-            viewModel.run {
-                listPokemons.observe(viewLifecycleOwner) {
+            shimmerFrameLayout.startShimmerAnimation()
+            lifecycleScope.launch {
+                viewModel.flow.collectLatest {
                     initAdapter(it)
                 }
-                getListPokemons()
             }
         }
     }
 
-    private fun initAdapter(list: ArrayList<Result>) {
+    private suspend fun initAdapter(list: PagingData<Result>) {
         binding?.run {
             if (recyclerView.adapter == null) {
-                recyclerView.adapter = ListPokemonsAdapter()
+                recyclerView.adapter = ListPokemonsPagingAdapter { id: Int ->
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.container, PokemonFragment().apply {
+                            arguments = bundleOf(
+                                ID_POKEMON to id
+                            )
+                        })
+                        .addToBackStack("")
+                        .commit()
+                }
                 recyclerView.layoutManager = LinearLayoutManager(requireContext())
             }
-            (recyclerView.adapter as? ListPokemonsAdapter)?.setList(list)
+            shimmerFrameLayout.visibility = View.GONE
+            shimmerFrameLayout.stopShimmerAnimation()
+            recyclerView.visibility = View.VISIBLE
+            (recyclerView.adapter as? ListPokemonsPagingAdapter)?.submitData(list)
         }
     }
 }

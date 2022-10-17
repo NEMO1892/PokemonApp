@@ -2,13 +2,23 @@ package com.example.pokemonapp.ui.list.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.paging.PagingDataAdapter
 import com.example.pokemonapp.databinding.ItemPokemonBinding
 import com.example.pokemonapp.model.Result
 
-class ListPokemonsAdapter : RecyclerView.Adapter<ListPokemonsViewHolder>() {
+class ListPokemonsPagingAdapter(
+    private val onClick: (id: Int) -> Unit
+) :
+    PagingDataAdapter<Result, ListPokemonsViewHolder>(ListPokemonsDiffUtil()) {
 
-    private var list: ArrayList<Result> = arrayListOf()
+    override fun onBindViewHolder(holder: ListPokemonsViewHolder, position: Int) {
+        getItem(position)?.let { pokemon ->
+            holder.bind(pokemon)
+            holder.itemView.setOnClickListener {
+                onClick(position + 1)
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListPokemonsViewHolder =
         ListPokemonsViewHolder(
@@ -18,15 +28,4 @@ class ListPokemonsAdapter : RecyclerView.Adapter<ListPokemonsViewHolder>() {
                 false
             )
         )
-
-    override fun onBindViewHolder(holder: ListPokemonsViewHolder, position: Int) {
-        holder.bind(list[position])
-    }
-
-    override fun getItemCount(): Int = list.size
-
-    fun setList(list: ArrayList<Result>) {
-        this.list = list
-        notifyDataSetChanged()
-    }
 }

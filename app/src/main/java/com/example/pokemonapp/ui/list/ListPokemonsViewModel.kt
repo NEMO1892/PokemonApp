@@ -1,27 +1,19 @@
 package com.example.pokemonapp.ui.list
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pokemonapp.model.Result
-import com.example.pokemonapp.repository.NetworkRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import com.example.pokemonapp.repository.PokemonDataSource
+
+const val COUNT_ITEM = 20
 
 class ListPokemonsViewModel(
-    private val networkRepository: NetworkRepository
+    private val dataSource: PokemonDataSource
 ) : ViewModel() {
 
-    val listPokemons = MutableLiveData<ArrayList<Result>>()
-
-    fun getListPokemons(offset: Int? = null, limit: Int? = null) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = networkRepository.getListPokemons(offset, limit)
-            if (response.isSuccessful) {
-                listPokemons.postValue(response.body()?.results)
-            } else {
-                response.errorBody()
-            }
-        }
-    }
+    val flow = Pager(PagingConfig(pageSize = COUNT_ITEM, initialLoadSize = COUNT_ITEM)) {
+        dataSource
+    }.flow.cachedIn(viewModelScope)
 }

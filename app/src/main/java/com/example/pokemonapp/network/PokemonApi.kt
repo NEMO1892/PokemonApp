@@ -1,15 +1,23 @@
 package com.example.pokemonapp.network
 
+import com.example.pokemonapp.model.Pokemon
 import com.example.pokemonapp.model.PokemonResponse
+import com.example.pokemonapp.ui.list.COUNT_ITEM
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PokemonApi {
 
     @GET("/api/v2/pokemon")
     suspend fun getPokemons(
-        @Query("offset") offset: Int? = null,
-        @Query("limit") limit: Int? = null
+        @Query("offset") offset: Int? = 0,
+        @Query("limit") limit: Int? = COUNT_ITEM
     ): Response<PokemonResponse>
+
+    @GET("/api/v2/pokemon/{id}")
+    suspend fun getOnePokemon(
+        @Path("id") id: Int? = 1
+    ): Response<Pokemon>
 }
