@@ -26,8 +26,23 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/retryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_60"
+        android:background="@drawable/bg_rounded_button"
+        android:fontFamily="@font/finger_paint"
+        android:text="@string/no_internet_connection"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/customLinearLayout"
+        android:id="@+id/customConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_400"
         android:layout_margin="@dimen/dp_8"

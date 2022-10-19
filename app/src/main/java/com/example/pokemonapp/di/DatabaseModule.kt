@@ -1,5 +1,6 @@
 package com.example.pokemonapp.di
 
+import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.example.pokemonapp.db.AppDataBase
@@ -9,7 +10,11 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class DatabaseModule(private val context: Context) {
+class DatabaseModule(private val context: Context, private val application: Application) {
+
+    @Provides
+    @Singleton
+    fun provideApplication(): Application = application
 
     @Singleton
     @Provides

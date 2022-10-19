@@ -11,7 +11,7 @@ class MyApplication : Application() {
 
     private fun initAppComponent() {
         appComponent =
-            DaggerApplicationComponent.builder().databaseModule(DatabaseModule(this)).build()
+            DaggerApplicationComponent.builder().databaseModule(DatabaseModule(this, this)).build()
     }
 
     companion object {
