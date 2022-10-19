@@ -7,4 +7,5 @@
     <string name="types">Types</string>
     <string name="kg">kg</string>
     <string name="cm">cm</string>
+    <string name="retry">Retry</string>
 </resources>

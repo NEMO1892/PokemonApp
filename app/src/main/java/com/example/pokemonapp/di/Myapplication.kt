@@ -10,7 +10,8 @@ class MyApplication : Application() {
     }
 
     private fun initAppComponent() {
-        appComponent = DaggerApplicationComponent.builder().build()
+        appComponent =
+            DaggerApplicationComponent.builder().databaseModule(DatabaseModule(this)).build()
     }
 
     companion object {

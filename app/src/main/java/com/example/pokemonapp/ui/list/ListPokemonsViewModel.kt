@@ -2,18 +2,25 @@ package com.example.pokemonapp.ui.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.cachedIn
-import com.example.pokemonapp.repository.PokemonDataSource
+import androidx.paging.*
+import com.example.pokemonapp.db.AppDataBase
+import com.example.pokemonapp.repository.NetworkRepository
+import com.example.pokemonapp.repository.PokemonRemoteMediator
 
-const val COUNT_ITEM = 20
+const val PAGE_SIZE = 20
 
 class ListPokemonsViewModel(
-    private val dataSource: PokemonDataSource
+    private val appDatabase: AppDataBase,
+    networkRepository: NetworkRepository
 ) : ViewModel() {
 
-    val flow = Pager(PagingConfig(pageSize = COUNT_ITEM, initialLoadSize = COUNT_ITEM)) {
-        dataSource
-    }.flow.cachedIn(viewModelScope)
+    @OptIn(ExperimentalPagingApi::class)
+    val flow = Pager(
+        config = PagingConfig(
+            pageSize = PAGE_SIZE,
+            initialLoadSize = PAGE_SIZE * 3
+        ),
+        remoteMediator = PokemonRemoteMediator(networkRepository, appDatabase),
+        pagingSourceFactory = { appDatabase.getResultDao().getAllResults() }
+    ).flow.cachedIn(viewModelScope)
 }

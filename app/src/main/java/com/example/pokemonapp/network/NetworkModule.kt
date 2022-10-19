@@ -11,8 +11,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-private const val BASE_URL = "https://pokeapi.co"
-
 @Module
 class NetworkModule {
 
@@ -39,5 +37,9 @@ class NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         return retrofit.create(PokemonApi::class.java)
+    }
+
+    private companion object {
+        const val BASE_URL = "https://pokeapi.co"
     }
 }

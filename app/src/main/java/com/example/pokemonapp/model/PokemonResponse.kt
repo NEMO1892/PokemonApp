@@ -1,5 +1,8 @@
 package com.example.pokemonapp.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 data class PokemonResponse(
     val count: Int,
     val next: String,
@@ -7,7 +10,9 @@ data class PokemonResponse(
     val results: ArrayList<Result>
 )
 
+@Entity(tableName = "result")
 data class Result(
+    @PrimaryKey
     val name: String,
     val url: String
 )
