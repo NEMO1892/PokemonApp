@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.pokemonapp.R
 import com.example.pokemonapp.databinding.FragmentPokemonBinding
 import com.example.pokemonapp.di.MyApplication
+import com.example.pokemonapp.model.PokemonLoadingState
+import com.example.pokemonapp.util.ConnectivityLiveData
 import com.example.pokemonapp.util.loadImage
 import javax.inject.Inject
 
@@ -22,6 +24,9 @@ class PokemonFragment : Fragment() {
     private var binding: FragmentPokemonBinding? = null
 
     private lateinit var viewModel: PokemonViewModel
+
+    @Inject
+    lateinit var connectivityLiveData: ConnectivityLiveData
 
     @Inject
     lateinit var viewModelProvider: PokemonViewModelProvider
@@ -52,25 +57,73 @@ class PokemonFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initialiseObservers()
+        startShimmerAnimation()
+        backButton()
+    }
+
+    private fun backButton() {
+        binding?.floatingBackButton?.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+    }
+
+    private fun initialiseObservers() {
         binding?.run {
-            startShimmerAnimation()
             viewModel.run {
-                onePokemon.observe(viewLifecycleOwner) { pokemon ->
-                    imagePokemonImageView.loadImage(pokemon.sprites.front_default)
-                    nameTextView.text = pokemon.name
-                    pokemon.types.forEach {
-                        typeTextView.append("${it.type.name} \n")
+                connectivityLiveData.observe(viewLifecycleOwner) { isAvailable ->
+                    when (isAvailable) {
+                        true -> {
+                            retryButton.visibility = View.GONE
+                            customConstraintLayout.visibility = View.VISIBLE
+                            initialiseOnePokemonObserver()
+                        }
+                        false -> {
+                            retryButton.visibility = View.VISIBLE
+                            customConstraintLayout.visibility = View.GONE
+                        }
                     }
-                    weightTextView.text = "${(pokemon.weight / 10)} ${getString(R.string.kg)}"
-                    heightTextView.text = "${(pokemon.height * 10)} ${getString(R.string.cm)}"
-                    stopShimmerAnimation()
+                }
+                initialiseOnePokemonObserver()
+                pokemonLoadingStateLiveData.observe(viewLifecycleOwner) {
+                    onPokemonLoadingStateChanged(it)
                 }
             }
-            arguments?.getInt(ID_POKEMON)?.let { id ->
-                viewModel.getOnePokemon(id)
+        }
+    }
+
+    private fun initialiseOnePokemonObserver() {
+        binding?.run {
+            viewModel.onePokemon.observe(viewLifecycleOwner) { pokemon ->
+                imagePokemonImageView.loadImage(pokemon.sprites.front_default)
+                nameTextView.text = pokemon.name
+                pokemon.types.forEach {
+                    typeTextView.append("${it.type.name} \n")
+                }
+                weightTextView.text = "${(pokemon.weight / 10)} ${getString(R.string.kg)}"
+                heightTextView.text = "${(pokemon.height * 10)} ${getString(R.string.cm)}"
+                stopShimmerAnimation()
             }
-            floatingBackButton.setOnClickListener {
-                requireActivity().onBackPressed()
+        }
+        arguments?.getInt(ID_POKEMON)?.let { id ->
+            viewModel.getOnePokemon(id)
+        }
+    }
+
+    private fun onPokemonLoadingStateChanged(state: PokemonLoadingState) {
+        binding?.run {
+            when (state) {
+                PokemonLoadingState.LOADING -> {
+                    startShimmerAnimation()
+                }
+                PokemonLoadingState.LOADED -> {
+                    stopShimmerAnimation()
+                }
+                PokemonLoadingState.ERROR -> {
+                    retryButton.visibility = View.VISIBLE
+                    stopShimmerAnimation()
+                    customConstraintLayout.visibility = View.GONE
+                }
             }
         }
     }
@@ -99,5 +152,4 @@ class PokemonFragment : Fragment() {
             weightTextView.background = null
         }
     }
-
 }

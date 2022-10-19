@@ -17,6 +17,7 @@ import com.example.pokemonapp.R
 import com.example.pokemonapp.databinding.FragmentListPokemonsBinding
 import com.example.pokemonapp.di.MyApplication
 import com.example.pokemonapp.model.Result
+import com.example.pokemonapp.ui.list.adapter.ListPokemonsLoadingAdapter
 import com.example.pokemonapp.ui.list.adapter.ListPokemonsPagingAdapter
 import com.example.pokemonapp.ui.pokemon.ID_POKEMON
 import com.example.pokemonapp.ui.pokemon.PokemonFragment
@@ -59,13 +60,22 @@ class ListPokemonsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupViews()
         binding?.run {
-            shimmerFrameLayout.startShimmerAnimation()
             lifecycleScope.launch {
                 viewModel.flow.collectLatest {
                     initAdapter(it)
                 }
             }
+        }
+    }
+
+    private fun setupViews() {
+        binding?.run {
+            (recyclerView.adapter as? ListPokemonsPagingAdapter)?.withLoadStateHeaderAndFooter(
+                header = ListPokemonsLoadingAdapter { (recyclerView.adapter as? ListPokemonsPagingAdapter)?.retry() },
+                footer = ListPokemonsLoadingAdapter { (recyclerView.adapter as? ListPokemonsPagingAdapter)?.retry() }
+            )
         }
     }
 
@@ -84,9 +94,6 @@ class ListPokemonsFragment : Fragment() {
                 }
                 recyclerView.layoutManager = LinearLayoutManager(requireContext())
             }
-            shimmerFrameLayout.visibility = View.GONE
-            shimmerFrameLayout.stopShimmerAnimation()
-            recyclerView.visibility = View.VISIBLE
             (recyclerView.adapter as? ListPokemonsPagingAdapter)?.submitData(list)
         }
     }
