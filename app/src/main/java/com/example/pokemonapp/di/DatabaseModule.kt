@@ -3,8 +3,8 @@ package com.example.pokemonapp.di
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.example.pokemonapp.db.AppDataBase
-import com.example.pokemonapp.db.dao.ResultDao
+import com.example.pokemonapp.data.db.AppDataBase
+import com.example.pokemonapp.data.db.dao.ResultDao
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -24,11 +24,12 @@ class DatabaseModule(private val context: Context, private val application: Appl
             AppDataBase::class.java,
             DB_NAME
         )
+            .fallbackToDestructiveMigration()
             .build()
     }
 
     @Provides
-    fun provideLaunchesDao(database: AppDataBase): ResultDao = database.getResultDao()
+    fun provideResultDao(database: AppDataBase): ResultDao = database.getResultDao()
 
     private companion object {
         const val DB_NAME = "Pokemon.db"
