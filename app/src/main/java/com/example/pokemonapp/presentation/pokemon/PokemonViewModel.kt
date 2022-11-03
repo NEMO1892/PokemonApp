@@ -6,13 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.pokemonapp.domain.model.Pokemon
 import com.example.pokemonapp.domain.model.PokemonLoadingState
 import com.example.pokemonapp.data.repository.NetworkRepositoryImpl
+import com.example.pokemonapp.domain.NetworkRepository
 import com.example.pokemonapp.domain.model.Type
 import com.example.pokemonapp.domain.model.Types
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PokemonViewModel(
-    private val networkRepository: NetworkRepositoryImpl
+    private val networkRepository: NetworkRepository
 ) : ViewModel() {
 
     val onePokemon = MutableLiveData<Pokemon>()

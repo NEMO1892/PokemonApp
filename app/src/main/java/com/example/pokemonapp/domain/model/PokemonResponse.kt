@@ -1,6 +1,16 @@
 package com.example.pokemonapp.domain.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+//data class Result(
+//    val name: String,
+//    val url: String
+//)
+
+@Entity(tableName = "result")
 data class Result(
+    @PrimaryKey
     val name: String,
     val url: String
 )

@@ -2,9 +2,12 @@ package com.example.pokemonapp.di
 
 import android.app.Application
 import android.content.Context
+import androidx.paging.ExperimentalPagingApi
 import androidx.room.Room
 import com.example.pokemonapp.data.db.AppDataBase
 import com.example.pokemonapp.data.db.dao.ResultDao
+import com.example.pokemonapp.data.paging.PokemonRemoteMediator
+import com.example.pokemonapp.domain.NetworkRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -30,6 +33,16 @@ class DatabaseModule(private val context: Context, private val application: Appl
 
     @Provides
     fun provideResultDao(database: AppDataBase): ResultDao = database.getResultDao()
+
+    @OptIn(ExperimentalPagingApi::class)
+    @Provides
+    @Singleton
+    fun provideRemoteMediator(
+        appDataBase: AppDataBase,
+        networkRepository: NetworkRepository
+    ): PokemonRemoteMediator {
+        return PokemonRemoteMediator(networkRepository, appDataBase)
+    }
 
     private companion object {
         const val DB_NAME = "Pokemon.db"

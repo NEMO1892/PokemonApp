@@ -20,7 +20,7 @@ class PokemonTypeConverter {
 
     @TypeConverter
     fun toTypes(value: String?): ArrayList<TypesRoomEntity> {
-        return Gson().fromJson(value, object : TypeToken<List<TypesRoomEntity>>() {}.type)
+        return Gson().fromJson(value, object : TypeToken<ArrayList<TypesRoomEntity>>() {}.type)
     }
 
     @TypeConverter

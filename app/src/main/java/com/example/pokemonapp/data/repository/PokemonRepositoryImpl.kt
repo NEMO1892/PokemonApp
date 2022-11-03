@@ -1,7 +1,7 @@
 package com.example.pokemonapp.data.repository
 
 import androidx.paging.*
-import com.example.pokemonapp.data.db.AppDataBase
+import com.example.pokemonapp.data.db.dao.ResultDao
 import com.example.pokemonapp.domain.model.Result
 import com.example.pokemonapp.data.paging.PokemonRemoteMediator
 import com.example.pokemonapp.domain.PokemonRepository
@@ -12,8 +12,8 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 class PokemonRepositoryImpl @Inject constructor(
-    private val appDatabase: AppDataBase,
-    private val networkRepository: NetworkRepositoryImpl
+    private val resultDao: ResultDao,
+    private val pokemonRemoteMediator: PokemonRemoteMediator
 ) : PokemonRepository {
 
     override fun getPokemons(): Flow<PagingData<Result>> {
@@ -22,8 +22,9 @@ class PokemonRepositoryImpl @Inject constructor(
                 pageSize = PAGE_SIZE,
                 initialLoadSize = PAGE_SIZE * 3
             ),
-            remoteMediator = PokemonRemoteMediator(networkRepository, appDatabase),
-            pagingSourceFactory = { appDatabase.getResultDao().getAllResults() }
+            remoteMediator = pokemonRemoteMediator,
+//            pagingSourceFactory = { resultDao.getAllResults() }
+            pagingSourceFactory = { resultDao.getAllResults() }
         )
             .flow
             .map { pagingData ->

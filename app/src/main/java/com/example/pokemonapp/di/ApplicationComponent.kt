@@ -5,7 +5,7 @@ import com.example.pokemonapp.presentation.pokemon.PokemonFragment
 import dagger.Component
 import javax.inject.Singleton
 
-@Component(modules = [NetworkModule::class, DatabaseModule::class])
+@Component(modules = [NetworkModule::class, DatabaseModule::class, RepositoriesModule::class])
 @Singleton
 interface ApplicationComponent {
 

@@ -9,6 +9,8 @@ import com.example.pokemonapp.data.repository.NetworkRepositoryImpl
 import com.example.pokemonapp.data.db.AppDataBase
 import com.example.pokemonapp.data.db.model.ResultRoomEntity
 import com.example.pokemonapp.data.db.model.RemoteKeys
+import com.example.pokemonapp.domain.NetworkRepository
+import com.example.pokemonapp.domain.model.Result
 import com.example.pokemonapp.presentation.list.PAGE_SIZE
 import retrofit2.HttpException
 import java.io.IOException
@@ -16,13 +18,13 @@ import javax.inject.Inject
 
 @ExperimentalPagingApi
 class PokemonRemoteMediator @Inject constructor(
-    private val networkRepository: NetworkRepositoryImpl,
+    private val networkRepository: NetworkRepository,
     private val appDataBase: AppDataBase
-) : RemoteMediator<Int, ResultRoomEntity>() {
+) : RemoteMediator<Int, Result>() {
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, ResultRoomEntity>
+        state: PagingState<Int, Result>
     ): MediatorResult {
 
         return try {
@@ -45,10 +47,13 @@ class PokemonRemoteMediator @Inject constructor(
                     nextPage
                 }
             }
+
             val response = networkRepository.getListPokemons(offset = currentPage * PAGE_SIZE)
             val endOfPaginationReached = response.body()?.count == currentPage
+
             val prevPage = if (currentPage == 1) null else currentPage - 1
             val nextPage = if (endOfPaginationReached) null else currentPage + 1
+
             appDataBase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     appDataBase.getResultDao().clearAllResults()
@@ -62,7 +67,18 @@ class PokemonRemoteMediator @Inject constructor(
                     )
                 }
                 appDataBase.remoteKeysDao().addAllRemoteKeys(keys)
-                appDataBase.getResultDao().insertResults(fetchPokemons(currentPage * PAGE_SIZE))
+//                appDataBase.getResultDao().insertResults(response.body()?.results?.map {
+//                    ResultRoomEntity(
+//                        name = it.name,
+//                        url = it.url
+//                    )
+//                } as ArrayList<ResultRoomEntity>)
+                appDataBase.getResultDao().insertResults(response.body()?.results?.map {
+                    Result(
+                        name = it.name,
+                        url = it.url
+                    )
+                } as ArrayList<Result>)
             }
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (exception: IOException) {
@@ -72,20 +88,20 @@ class PokemonRemoteMediator @Inject constructor(
         }
     }
 
-    private suspend fun fetchPokemons(
-        offset: Int
-    ): ArrayList<ResultRoomEntity> {
-        val response = networkRepository.getListPokemons(offset = offset)
-        return response.body()?.results?.map {
-            ResultRoomEntity(
-                name = it.name,
-                url = it.url
-            )
-        } as ArrayList<ResultRoomEntity>
-    }
+//    private suspend fun fetchPokemons(
+//        offset: Int
+//    ): ArrayList<ResultRoomEntity> {
+//        val response = networkRepository.getListPokemons(offset = offset)
+//        return response.body()?.results?.map {
+//            ResultRoomEntity(
+//                name = it.name,
+//                url = it.url
+//            )
+//        } as ArrayList<ResultRoomEntity>
+//    }
 
     private suspend fun getRemoteKeyClosestToCurrentPosition(
-        state: PagingState<Int, ResultRoomEntity>
+        state: PagingState<Int, Result>
     ): RemoteKeys? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.name?.let { id ->
@@ -95,7 +111,7 @@ class PokemonRemoteMediator @Inject constructor(
     }
 
     private suspend fun getRemoteKeyForFirstItem(
-        state: PagingState<Int, ResultRoomEntity>
+        state: PagingState<Int, Result>
     ): RemoteKeys? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
             ?.let { result ->
@@ -104,7 +120,7 @@ class PokemonRemoteMediator @Inject constructor(
     }
 
     private suspend fun getRemoteKeyForLastItem(
-        state: PagingState<Int, ResultRoomEntity>
+        state: PagingState<Int, Result>
     ): RemoteKeys? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { result ->

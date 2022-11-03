@@ -10,11 +10,12 @@ import com.example.pokemonapp.data.db.dao.RemoteKeysDao
 import com.example.pokemonapp.data.db.dao.ResultDao
 import com.example.pokemonapp.data.db.model.*
 import com.example.pokemonapp.data.db.model.RemoteKeys
+import com.example.pokemonapp.domain.model.Result
 
 @Database(
     entities = [RemoteKeys::class, PokemonResponseRoomEntity::class,
         PokemonRoomEntity::class, SpritesRoomEntity::class, TypesRoomEntity::class,
-        TypeRoomEntity::class, ResultRoomEntity::class],
+        TypeRoomEntity::class, ResultRoomEntity::class, Result::class],
     version = 2,
     exportSchema = false
 )
