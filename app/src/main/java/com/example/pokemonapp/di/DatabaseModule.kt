@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.paging.ExperimentalPagingApi
 import androidx.room.Room
 import com.example.pokemonapp.data.db.AppDataBase
+import com.example.pokemonapp.data.db.dao.RemoteKeysDao
 import com.example.pokemonapp.data.db.dao.ResultDao
 import com.example.pokemonapp.data.paging.PokemonRemoteMediator
 import com.example.pokemonapp.domain.NetworkRepository
@@ -32,16 +33,22 @@ class DatabaseModule(private val context: Context, private val application: Appl
     }
 
     @Provides
+    @Singleton
     fun provideResultDao(database: AppDataBase): ResultDao = database.getResultDao()
+
+    @Provides
+    @Singleton
+    fun provideRemoteKeysDao(database: AppDataBase): RemoteKeysDao = database.remoteKeysDao()
 
     @OptIn(ExperimentalPagingApi::class)
     @Provides
     @Singleton
     fun provideRemoteMediator(
-        appDataBase: AppDataBase,
+        resultDao: ResultDao,
+        remoteKeysDao: RemoteKeysDao,
         networkRepository: NetworkRepository
     ): PokemonRemoteMediator {
-        return PokemonRemoteMediator(networkRepository, appDataBase)
+        return PokemonRemoteMediator(networkRepository, resultDao, remoteKeysDao)
     }
 
     private companion object {

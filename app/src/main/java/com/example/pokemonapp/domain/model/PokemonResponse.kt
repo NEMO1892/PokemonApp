@@ -8,9 +8,7 @@ import androidx.room.PrimaryKey
 //    val url: String
 //)
 
-@Entity(tableName = "result")
 data class Result(
-    @PrimaryKey
     val name: String,
     val url: String
 )

@@ -21,7 +21,6 @@ import com.example.pokemonapp.presentation.list.adapter.ListPokemonsLoadingAdapt
 import com.example.pokemonapp.presentation.list.adapter.ListPokemonsPagingAdapter
 import com.example.pokemonapp.presentation.pokemon.ID_POKEMON
 import com.example.pokemonapp.presentation.pokemon.PokemonFragment
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,6 +42,11 @@ class ListPokemonsFragment : Fragment() {
         return binding?.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         MyApplication.appComponent.inject(this)
@@ -62,8 +66,8 @@ class ListPokemonsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         binding?.run {
-            lifecycleScope.launch {
-                viewModel.flow.collectLatest {
+            viewModel.flow.observe(viewLifecycleOwner) {
+                lifecycleScope.launch {
                     initAdapter(it)
                 }
             }

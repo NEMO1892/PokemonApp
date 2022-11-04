@@ -2,7 +2,7 @@ package com.example.pokemonapp.data.network
 
 import com.example.pokemonapp.data.network.model.PokemonNetworkEntity
 import com.example.pokemonapp.data.network.model.PokemonResponseNetworkEntity
-import com.example.pokemonapp.presentation.list.PAGE_SIZE
+import com.example.pokemonapp.data.repository.PAGE_SIZE
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

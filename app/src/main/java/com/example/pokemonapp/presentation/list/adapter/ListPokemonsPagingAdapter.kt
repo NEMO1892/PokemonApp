@@ -8,8 +8,7 @@ import com.example.pokemonapp.domain.model.Result
 
 class ListPokemonsPagingAdapter(
     private val onClick: (id: Int) -> Unit
-) :
-    PagingDataAdapter<Result, ListPokemonsViewHolder>(ListPokemonsDiffUtil()) {
+) : PagingDataAdapter<Result, ListPokemonsViewHolder>(ListPokemonsDiffUtil()) {
 
     override fun onBindViewHolder(holder: ListPokemonsViewHolder, position: Int) {
         getItem(position)?.let { pokemon ->

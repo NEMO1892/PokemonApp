@@ -40,6 +40,11 @@ class PokemonFragment : Fragment() {
         return binding?.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         MyApplication.appComponent.inject(this)

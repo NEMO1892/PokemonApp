@@ -1,13 +1,17 @@
 package com.example.pokemonapp.presentation.list
 
-import androidx.lifecycle.ViewModel
-import com.example.pokemonapp.domain.PokemonRepository
+import androidx.lifecycle.*
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.example.pokemonapp.domain.DbRepository
+import com.example.pokemonapp.domain.model.Result
+import kotlinx.coroutines.Dispatchers
 
-const val PAGE_SIZE = 20
 
 class ListPokemonsViewModel(
-    pokemonRepository: PokemonRepository
+    dbRepository: DbRepository
 ) : ViewModel() {
 
-    val flow = pokemonRepository.getPokemons()
+    val flow: LiveData<PagingData<Result>> =
+        dbRepository.getPokemons().asLiveData(context = Dispatchers.IO).cachedIn(viewModelScope)
 }

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokemonapp.domain.model.Pokemon
 import com.example.pokemonapp.domain.model.PokemonLoadingState
-import com.example.pokemonapp.data.repository.NetworkRepositoryImpl
 import com.example.pokemonapp.domain.NetworkRepository
 import com.example.pokemonapp.domain.model.Type
 import com.example.pokemonapp.domain.model.Types
