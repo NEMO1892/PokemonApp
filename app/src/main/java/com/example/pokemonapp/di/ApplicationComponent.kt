@@ -1,12 +1,11 @@
 package com.example.pokemonapp.di
 
-import com.example.pokemonapp.network.NetworkModule
-import com.example.pokemonapp.ui.list.ListPokemonsFragment
-import com.example.pokemonapp.ui.pokemon.PokemonFragment
+import com.example.pokemonapp.presentation.list.ListPokemonsFragment
+import com.example.pokemonapp.presentation.pokemon.PokemonFragment
 import dagger.Component
 import javax.inject.Singleton
 
-@Component(modules = [NetworkModule::class, DatabaseModule::class])
+@Component(modules = [NetworkModule::class, DatabaseModule::class, RepositoriesModule::class])
 @Singleton
 interface ApplicationComponent {
 

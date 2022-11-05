@@ -2,9 +2,13 @@ package com.example.pokemonapp.di
 
 import android.app.Application
 import android.content.Context
+import androidx.paging.ExperimentalPagingApi
 import androidx.room.Room
-import com.example.pokemonapp.db.AppDataBase
-import com.example.pokemonapp.db.dao.ResultDao
+import com.example.pokemonapp.data.db.AppDataBase
+import com.example.pokemonapp.data.db.dao.RemoteKeysDao
+import com.example.pokemonapp.data.db.dao.ResultDao
+import com.example.pokemonapp.data.paging.PokemonRemoteMediator
+import com.example.pokemonapp.domain.NetworkRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -24,11 +28,28 @@ class DatabaseModule(private val context: Context, private val application: Appl
             AppDataBase::class.java,
             DB_NAME
         )
+            .fallbackToDestructiveMigration()
             .build()
     }
 
     @Provides
-    fun provideLaunchesDao(database: AppDataBase): ResultDao = database.getResultDao()
+    @Singleton
+    fun provideResultDao(database: AppDataBase): ResultDao = database.getResultDao()
+
+    @Provides
+    @Singleton
+    fun provideRemoteKeysDao(database: AppDataBase): RemoteKeysDao = database.remoteKeysDao()
+
+    @OptIn(ExperimentalPagingApi::class)
+    @Provides
+    @Singleton
+    fun provideRemoteMediator(
+        resultDao: ResultDao,
+        remoteKeysDao: RemoteKeysDao,
+        networkRepository: NetworkRepository
+    ): PokemonRemoteMediator {
+        return PokemonRemoteMediator(networkRepository, resultDao, remoteKeysDao)
+    }
 
     private companion object {
         const val DB_NAME = "Pokemon.db"
