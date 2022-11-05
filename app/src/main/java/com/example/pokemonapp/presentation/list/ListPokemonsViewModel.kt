@@ -7,7 +7,6 @@ import com.example.pokemonapp.domain.DbRepository
 import com.example.pokemonapp.domain.model.Result
 import kotlinx.coroutines.Dispatchers
 
-
 class ListPokemonsViewModel(
     dbRepository: DbRepository
 ) : ViewModel() {

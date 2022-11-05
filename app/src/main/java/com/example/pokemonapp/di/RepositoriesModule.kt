@@ -18,10 +18,7 @@ class RepositoriesModule {
     @Provides
     fun provideNetworkRepository(
         api: PokemonApi
-    ): NetworkRepository {
-        return NetworkRepositoryImpl(api)
-    }
-
+    ): NetworkRepository = NetworkRepositoryImpl(api)
 
     @Provides
     @Singleton

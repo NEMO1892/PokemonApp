@@ -1,6 +1,5 @@
 package com.example.pokemonapp.presentation.pokemon
 
-import com.example.pokemonapp.data.repository.NetworkRepositoryImpl
 import com.example.pokemonapp.domain.NetworkRepository
 import com.example.pokemonapp.util.BaseViewModelFactory
 import javax.inject.Inject

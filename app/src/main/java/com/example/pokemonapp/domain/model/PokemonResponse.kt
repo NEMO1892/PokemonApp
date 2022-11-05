@@ -1,13 +1,5 @@
 package com.example.pokemonapp.domain.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-//data class Result(
-//    val name: String,
-//    val url: String
-//)
-
 data class Result(
     val name: String,
     val url: String
