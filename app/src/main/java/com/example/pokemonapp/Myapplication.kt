@@ -1,4 +1,4 @@
-package com.example.pokemonapp.util
+package com.example.pokemonapp
 
 import android.app.Application
 import com.example.pokemonapp.di.ApplicationComponent
