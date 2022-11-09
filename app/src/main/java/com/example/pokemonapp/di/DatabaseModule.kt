@@ -8,7 +8,8 @@ import com.example.pokemonapp.data.db.AppDataBase
 import com.example.pokemonapp.data.db.dao.RemoteKeysDao
 import com.example.pokemonapp.data.db.dao.ResultDao
 import com.example.pokemonapp.data.paging.PokemonRemoteMediator
-import com.example.pokemonapp.domain.NetworkRepository
+import com.example.pokemonapp.domain.PokemonRepository
+import com.example.pokemonapp.domain.RemoteMediatorRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -44,11 +45,10 @@ class DatabaseModule(private val context: Context, private val application: Appl
     @Provides
     @Singleton
     fun provideRemoteMediator(
-        resultDao: ResultDao,
-        remoteKeysDao: RemoteKeysDao,
-        networkRepository: NetworkRepository
+        pokemonRepository: PokemonRepository,
+        remoteMediatorRepository: RemoteMediatorRepository
     ): PokemonRemoteMediator {
-        return PokemonRemoteMediator(networkRepository, resultDao, remoteKeysDao)
+        return PokemonRemoteMediator(pokemonRepository, remoteMediatorRepository)
     }
 
     private companion object {

@@ -15,7 +15,7 @@ import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pokemonapp.R
 import com.example.pokemonapp.databinding.FragmentListPokemonsBinding
-import com.example.pokemonapp.util.MyApplication
+import com.example.pokemonapp.MyApplication
 import com.example.pokemonapp.domain.model.Result
 import com.example.pokemonapp.presentation.list.adapter.ListPokemonsLoadingAdapter
 import com.example.pokemonapp.presentation.list.adapter.ListPokemonsPagingAdapter
@@ -66,7 +66,7 @@ class ListPokemonsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         binding?.run {
-            viewModel.flow.observe(viewLifecycleOwner) {
+            viewModel.flow?.observe(viewLifecycleOwner) {
                 lifecycleScope.launch {
                     initAdapter(it)
                 }

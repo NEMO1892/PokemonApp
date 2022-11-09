@@ -4,7 +4,7 @@ import androidx.paging.PagingData
 import com.example.pokemonapp.domain.model.Result
 import kotlinx.coroutines.flow.Flow
 
-interface DbRepository {
+interface PagerRepository {
 
-    fun getPokemons(): Flow<PagingData<Result>>
+    fun getPokemons(): Flow<PagingData<Result>>?
 }
