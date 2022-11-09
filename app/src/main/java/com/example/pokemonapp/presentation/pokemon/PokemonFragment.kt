@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.pokemonapp.R
 import com.example.pokemonapp.databinding.FragmentPokemonBinding
-import com.example.pokemonapp.util.MyApplication
+import com.example.pokemonapp.MyApplication
 import com.example.pokemonapp.domain.model.PokemonLoadingState
 import com.example.pokemonapp.util.ConnectivityLiveData
 import com.example.pokemonapp.util.loadImage
